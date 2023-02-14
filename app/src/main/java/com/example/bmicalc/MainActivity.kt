@@ -20,11 +20,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.senai.sp.jandira.bmicalc.model.Client
+import br.senai.sp.jandira.bmicalc.model.Product
 import com.example.bmicalc.ui.theme.BMICalcTheme
+import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val p = Product()
+        p.id = 1
+        p.name = "Mouse"
+        p.price = 230.0
+
+        var x = p.addName()
+        var y = p.listProducts()
+
+        val c = Client(
+            id = 10,
+            name = "Oswaldo",
+            birthDay = LocalDate.of(2004, 8, 19)
+        )
+
+
         setContent {
             BMICalcTheme {
                 CalculatorScreen()
@@ -130,18 +149,13 @@ fun CalculatorScreen() {
                 //Footer
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                 )
                 {
                     Surface(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp),
-                        color = Color.Blue,
-                        shape = RoundedCornerShape(
-                            topStart = 32.dp,
-                            topEnd = 32.dp
-                        )
+                            .fillMaxSize(),
+                        color = Color(79, 54, 232)
                     ) {
 
                     }
