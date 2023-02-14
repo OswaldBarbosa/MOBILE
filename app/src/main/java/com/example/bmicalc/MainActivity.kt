@@ -1,34 +1,37 @@
 package com.example.bmicalc
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.sp.jandira.bmicalc.model.Client
-import br.senai.sp.jandira.bmicalc.model.Product
 import com.example.bmicalc.ui.theme.BMICalcTheme
 import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+/*
         val p = Product()
         p.id = 1
         p.name = "Mouse"
@@ -42,7 +45,7 @@ class MainActivity : ComponentActivity() {
             name = "Oswaldo",
             birthDay = LocalDate.of(2004, 8, 19)
         )
-
+*/
 
         setContent {
             BMICalcTheme {
@@ -55,6 +58,11 @@ class MainActivity : ComponentActivity() {
 @Preview(showSystemUi = true)
 @Composable
 fun CalculatorScreen() {
+
+    var weigthState = rememberSaveable {
+        mutableStateOf("")
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -106,11 +114,14 @@ fun CalculatorScreen() {
                         )
 
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
-
+                        value = weigthState.value,
+                        onValueChange = {
+                            weigthState.value = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
                     )
 
                     Text(
@@ -134,7 +145,8 @@ fun CalculatorScreen() {
 
                     Button(
                         onClick = { /*TODO*/ },
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(Color.Green)
                     ) {
                         Text(
                             modifier = Modifier
@@ -142,6 +154,7 @@ fun CalculatorScreen() {
                                 .padding(vertical = 8.dp),
                             text = stringResource(id = R.string.button_calculate),
                             textAlign = TextAlign.Center,
+                            color = Color.White
                         )
                     }
 
@@ -155,8 +168,50 @@ fun CalculatorScreen() {
                     Surface(
                         modifier = Modifier
                             .fillMaxSize(),
-                        color = Color(79, 54, 232)
-                    ) {
+                        color = Color(79, 54, 232),
+                        shape = RoundedCornerShape(
+                            topStart = 24.dp,
+                            topEnd = 24.dp
+                        )
+                    )
+                    {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.SpaceEvenly,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.your_score),
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+
+                            Text(
+                                text = weigthState.value,
+                                fontSize = 40.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            Text(
+                                text = stringResource(id = R.string.ideal),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            Row() {
+                                Button(onClick = { /*TODO*/ }
+                                ) {
+                                    Text(text = stringResource(id = R.string.reset))
+                                }
+                                Spacer(modifier = Modifier.width(48.dp))
+                                Button(onClick = { /*TODO*/ }) {
+                                    Text(text = stringResource(id = R.string.share))
+                                }
+                            }
+                        }
+
 
                     }
                 }
