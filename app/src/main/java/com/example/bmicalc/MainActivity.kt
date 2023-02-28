@@ -17,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,8 +26,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.senai.sp.jandira.bmicalc.model.calcs.bmiCalculate
+import br.senai.sp.jandira.bmicalc.model.calcs.getBmiClassification
+import br.senai.sp.jandira.bmicalc.model.calcs.getColorClassification
 import com.example.bmicalc.ui.theme.BMICalcTheme
 import java.time.LocalDate
+import kotlin.math.pow
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +65,24 @@ class MainActivity : ComponentActivity() {
 fun CalculatorScreen() {
 
     var weigthState = rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var heigthState = rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var bmiState = rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var bmiClassificationState = rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var context = LocalContext.current
+
+    var color = rememberSaveable {
         mutableStateOf("")
     }
 
@@ -134,17 +157,28 @@ fun CalculatorScreen() {
                     )
 
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = {},
+                        value = heigthState.value,
+                        onValueChange = {
+                            heigthState.value = it
+                        },
                         modifier = Modifier
                             .fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(16.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
 
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            var bmi = bmiCalculate(
+                                weight = weigthState.value.toDouble(),
+                                heigth = heigthState.value.toDouble()
+                            )
+                            bmiState.value = bmi.toString()
+                            bmiClassificationState.value =
+                                getBmiClassification(bmi, context)
+                        },
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(Color.Green)
                     ) {
@@ -168,7 +202,11 @@ fun CalculatorScreen() {
                     Surface(
                         modifier = Modifier
                             .fillMaxSize(),
-                        color = Color(79, 54, 232),
+                        color = if (bmiState.value.isEmpty()) {
+                            Color(0,0,255,255)
+                        } else {
+                            getColorClassification(bmiState.value.toDouble())
+                        },
                         shape = RoundedCornerShape(
                             topStart = 24.dp,
                             topEnd = 24.dp
@@ -189,13 +227,13 @@ fun CalculatorScreen() {
                             )
 
                             Text(
-                                text = weigthState.value,
+                                text = String.format("%.2f", if (bmiState.value.isEmpty()) 0.0 else bmiState.value.toDouble()),
                                 fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
                             Text(
-                                text = stringResource(id = R.string.ideal),
+                                text =  bmiClassificationState.value,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -212,11 +250,9 @@ fun CalculatorScreen() {
                             }
                         }
 
-
                     }
                 }
             }
-
 
         }
 

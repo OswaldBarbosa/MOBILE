@@ -8,4 +8,9 @@
     <string name="reset">Reset</string>
     <string name="share">Share</string>
     <string name="ideal">Congratulations, your weigth is deal</string>
+    <string name="under_weight">Underweigth</string>
+    <string name="normal_weight">Normal Weigth</string>
+    <string name="over_weigth">Class I - Overweigth</string>
+    <string name="obesity">Class II - Obesity</string>
+    <string name="morbity_obesity">Class III - Morbid Obesity</string>
 </resources>
